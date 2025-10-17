@@ -1,0 +1,31 @@
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  INTERNAL_SERVER_ERROR: 500,
+};
+
+export const ERROR_MESSAGES = {
+  VALIDATION_ERROR: 'Ошибка валидации данных',
+  PRODUCT_TITLE_REQUIRED: 'Поле "title" должно быть заполнено',
+  PRODUCT_TITLE_MIN_LENGTH: 'Минимальная длина поля "title" - 2',
+  PRODUCT_TITLE_MAX_LENGTH: 'Максимальная длина поля "title" - 30',
+  PRODUCT_IMAGE_FILE_NAME_REQUIRED: 'Поле "fileName" должно быть заполнено',
+  PRODUCT_IMAGE_ORIGINAL_NAME_REQUIRED: 'Поле "originalName" должно быть заполнено',
+  PRODUCT_PRICE_NEGATIVE: 'Цена не может быть отрицательной',
+  PRODUCT_DUPLICATE_TITLE: 'Товар с таким названием уже существует',
+  ORDER_ITEMS_REQUIRED: 'Поле "items" должно быть заполнено',
+  ORDER_TOTAL_REQUIRED: 'Поле "total" должно быть заполнено',
+  ORDER_PAYMENT_REQUIRED: 'Поле "payment" должно быть заполнено',
+  ORDER_EMAIL_REQUIRED: 'Поле "email" должно быть заполнено',
+  ORDER_PHONE_REQUIRED: 'Поле "phone" должно быть заполнено',
+  ORDER_ADDRESS_REQUIRED: 'Поле "address" должно быть заполнено',
+  USER_NOT_FOUND: 'Пользователь не найден',
+  INVALID_CREDENTIALS: 'Неверный email или пароль',
+  USER_ALREADY_EXISTS: 'Пользователь с таким email уже существует',
+  AUTH_REQUIRED: 'Необходима авторизация',
+  INVALID_TOKEN: 'Неверный токен',
+};
