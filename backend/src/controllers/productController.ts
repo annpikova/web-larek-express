@@ -56,7 +56,7 @@ const createProduct = (req: Request, res: Response, next: NextFunction) => {
   })
     .then((product) => {
       res.status(HTTP_STATUS.CREATED)
-        .json({ item: product });
+        .json(product);
     })
     .catch((error) => {
       if (error instanceof Error && error.message.includes('E11000')) {

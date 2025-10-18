@@ -5,7 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "lint": "npx eslint src/**/*.ts",
-    "build": "tsc",
+    "build": "tsc && cp -R public dist",
     "dev": "npx nodemon -L src/app.ts ",
     "start": "ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"

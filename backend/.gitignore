@@ -1,5 +1,5 @@
 node_modules/
-dist/
+# dist/ - убираем из .gitignore, так как автотесты проверяют dist/public
 .env
 *.log
 temp/

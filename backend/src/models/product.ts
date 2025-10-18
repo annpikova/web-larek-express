@@ -51,7 +51,8 @@ const productSchema = new Schema<IProduct>(
 // Триггер для удаления файлов при удалении товара
 productSchema.post('findOneAndDelete', async (doc) => {
   if (doc && doc.image && doc.image.fileName) {
-    const filePath = path.join(process.cwd(), 'public', doc.image.fileName);
+    const rel = doc.image.fileName.replace(/^\//, '');
+    const filePath = path.join(process.cwd(), 'public', rel);
     try {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);

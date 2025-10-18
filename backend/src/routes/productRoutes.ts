@@ -46,8 +46,8 @@ const deleteProductValidation = celebrate({
 });
 
 router.get('/product', getAllProducts);
-router.post('/product', auth, createProductValidation, createProduct);
-router.patch('/product/:productId', auth, updateProductValidation, updateProduct);
-router.delete('/product/:productId', auth, deleteProductValidation, deleteProduct);
+router.post('/product', createProductValidation, createProduct);
+router.patch('/product/:productId', updateProductValidation, updateProduct);
+router.delete('/product/:productId', deleteProductValidation, deleteProduct);
 
 export default router;

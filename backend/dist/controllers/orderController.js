@@ -1,0 +1,53 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createOrder = void 0;
+const faker_1 = require("@faker-js/faker");
+const mongoose_1 = require("mongoose");
+const product_1 = __importDefault(require("../models/product"));
+const constants_1 = require("../constants");
+const BadRequestError_1 = __importDefault(require("../errors/BadRequestError"));
+const createOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { payment, email, phone, address, total, items } = req.body;
+        // здесь тело уже провалидировано celebrate, но на всякий случай:
+        if (!Array.isArray(items) || items.length === 0) {
+            return next(new BadRequestError_1.default('Поле "items" должно быть заполнено'));
+        }
+        // находим все товары по id
+        const products = yield product_1.default.find({
+            _id: { $in: items.map((id) => new mongoose_1.Types.ObjectId(id)) },
+        });
+        // 1) все ли товары существуют
+        if (products.length !== items.length) {
+            return next(new BadRequestError_1.default('Некорректные товары в заказе'));
+        }
+        // 2) все ли товары продаются (price !== null)
+        if (products.some((p) => p.price === null || p.price === undefined)) {
+            return next(new BadRequestError_1.default('В заказе есть товар без цены'));
+        }
+        // 3) совпадает ли сумма
+        const sum = products.reduce((acc, p) => acc + p.price, 0);
+        if (sum !== total) {
+            return next(new BadRequestError_1.default('Сумма заказа не совпадает с total'));
+        }
+        // успех — по условиям заказы не сохраняем в БД
+        const id = faker_1.faker.string.uuid();
+        return res.status(constants_1.HTTP_STATUS.OK).json({ id, total: sum });
+    }
+    catch (err) {
+        return next(err);
+    }
+});
+exports.createOrder = createOrder;
