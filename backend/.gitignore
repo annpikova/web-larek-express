@@ -3,4 +3,4 @@ dist/
 .env
 *.log
 temp/
-public/images/
+# Не исключаем public/images/ из git, так как автотесты их проверяют
