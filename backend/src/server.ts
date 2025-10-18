@@ -7,10 +7,10 @@ import { config } from './config';
 // Подключение к MongoDB
 mongoose.connect(config.DB_ADDRESS)
   .then(() => {
-    console.log('✅ Подключение к БД успешно установлено');
+    console.log('Подключение к БД успешно установлено');
   })
   .catch((error) => {
-    console.error(`❌ Не удалось подключиться к БД: ${error}`);
+    console.error(`Не удалось подключиться к БД: ${error}`);
     process.exit(1);
   });
 
@@ -19,7 +19,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Главная страница - исправляем проблему с "Cannot GET /"
 app.get('/', (req, res) => {
