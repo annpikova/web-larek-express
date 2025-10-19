@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
-import { config } from './config';
+import config from './config';
 
 mongoose.connect(config.DB_ADDRESS)
   .then(() => {

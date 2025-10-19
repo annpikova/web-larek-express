@@ -3,14 +3,14 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
-import { config } from '../config';
+import config from '../config';
 import BadRequestError from '../errors/BadRequestError';
 import UnauthorizedError from '../errors/UnauthorizedError';
 import NotFoundError from '../errors/NotFoundError';
 import ConflictError from '../errors/ConflictError';
 
 // Вспомогательная функция для генерации токенов
-const _getTokens = (user: any) => {
+const getTokens = (user: any) => {
   const accessToken = jwt.sign(
     { _id: user._id.toString() },
     config.JWT_SECRET,
@@ -39,7 +39,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       tokens: [],
     });
 
-    const { accessToken, refreshToken } = _getTokens(user);
+    const { accessToken, refreshToken } = getTokens(user);
 
     // Сохраняем refresh токен в базе
     if (!user.tokens) {
@@ -80,7 +80,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
-  console.log('Login attempt:', { email, password: password ? '***' : 'empty' });
 
   try {
     const user = await User.findOne({ email }).select('+password');
@@ -96,7 +95,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    const { accessToken, refreshToken } = _getTokens(user);
+    const { accessToken, refreshToken } = getTokens(user);
 
     // Сохраняем refresh токен в базе
     if (!user.tokens) {
@@ -144,7 +143,7 @@ const refreshAccessToken = async (req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = _getTokens(user);
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = getTokens(user);
 
     // Удаляем старый refresh токен и добавляем новый
     if (!user.tokens) {

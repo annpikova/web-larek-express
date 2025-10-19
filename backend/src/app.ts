@@ -10,7 +10,7 @@ import productRoutes from './routes/productRoutes';
 import orderRoutes from './routes/orderRoutes';
 import authRoutes from './routes/authRoutes';
 import uploadRoutes from './routes/uploadRoutes';
-import { config } from './config';
+import config from './config';
 import { errorLogger, requestLogger } from './middlewares/logger';
 
 mongoose.connect(config.DB_ADDRESS)

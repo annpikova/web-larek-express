@@ -6,7 +6,7 @@ import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
 import ConflictError from '../errors/ConflictError';
 import BadRequestError from '../errors/BadRequestError';
 import NotFoundError from '../errors/NotFoundError';
-import { config } from '../config';
+import config from '../config';
 
 const getAllProducts = (_req: Request, res: Response, next: NextFunction) => {
   Product.find()
