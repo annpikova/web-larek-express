@@ -25,7 +25,7 @@ app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 // Главная страница - исправляем проблему с "Cannot GET /"
 app.get('/', (req, res) => {
     res.json({
-        message: '🎉 Web-ларёк API работает!',
+        message: 'Web-ларёк API работает!',
         status: 'success',
         timestamp: new Date().toISOString(),
         endpoints: {
@@ -57,7 +57,7 @@ app.post('/order', (req, res) => {
 // Запуск сервера
 const PORT = config_1.config.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-    console.log(`📱 API доступно по адресу: http://localhost:${PORT}`);
-    console.log(`🏠 Главная страница: http://localhost:${PORT}/`);
+    console.log(`Сервер запущен на http://localhost:${PORT}`);
+    console.log(`API доступно по адресу: http://localhost:${PORT}`);
+    console.log(`Главная страница: http://localhost:${PORT}/`);
 });

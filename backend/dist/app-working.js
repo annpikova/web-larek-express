@@ -10,10 +10,10 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config");
 mongoose_1.default.connect(config_1.config.DB_ADDRESS)
     .then(() => {
-    console.log('✅ Подключение к БД успешно установлено');
+    console.log('Подключение к БД успешно установлено');
 })
     .catch((error) => {
-    console.error(`❌ Не удалось подключиться к БД: ${error}`);
+    console.error(`Не удалось подключиться к БД: ${error}`);
     process.exit(1);
 });
 const app = (0, express_1.default)();
@@ -51,6 +51,6 @@ app.post('/order', (req, res) => {
     });
 });
 app.listen(config_1.config.PORT, () => {
-    console.log(`🚀 Сервер запущен на http://localhost:${config_1.config.PORT}`);
-    console.log(`📱 API доступно по адресу: http://localhost:${config_1.config.PORT}`);
+    console.log(`Сервер запущен на http://localhost:${config_1.config.PORT}`);
+    console.log(`API доступно по адресу: http://localhost:${config_1.config.PORT}`);
 });

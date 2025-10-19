@@ -29,7 +29,7 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
-app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
+app.use(express_1.default.static(path_1.default.join(__dirname, '..', 'public')));
 app.use(logger_1.requestLogger);
 app.use(productRoutes_1.default);
 app.use(orderRoutes_1.default);

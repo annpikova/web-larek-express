@@ -6,10 +6,10 @@ import { config } from './config';
 
 mongoose.connect(config.DB_ADDRESS)
   .then(() => {
-    console.log('✅ Подключение к БД успешно установлено');
+    console.log('Подключение к БД успешно установлено');
   })
   .catch((error) => {
-    console.error(`❌ Не удалось подключиться к БД: ${error}`);
+    console.error(`Не удалось подключиться к БД: ${error}`);
     process.exit(1);
   });
 
@@ -53,6 +53,6 @@ app.post('/order', (req, res) => {
 });
 
 app.listen(config.PORT, () => {
-  console.log(`🚀 Сервер запущен на http://localhost:${config.PORT}`);
-  console.log(`📱 API доступно по адресу: http://localhost:${config.PORT}`);
+  console.log(`Сервер запущен на http://localhost:${config.PORT}`);
+  console.log(`API доступно по адресу: http://localhost:${config.PORT}`);
 });
