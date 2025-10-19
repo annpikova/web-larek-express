@@ -35,6 +35,9 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     // Сохраняем refresh токен в базе
+    if (!user.tokens) {
+      user.tokens = []; // Если массива нет, то установим его
+    }
     user.tokens.push({ token: refreshToken });
     await user.save();
 
@@ -98,6 +101,9 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     // Сохраняем refresh токен в базе
+    if (!user.tokens) {
+      user.tokens = []; // Если массива нет, то установим его
+    }
     user.tokens.push({ token: refreshToken });
     await user.save();
 
@@ -153,6 +159,9 @@ const refreshAccessToken = async (req: Request, res: Response, next: NextFunctio
     );
 
     // Удаляем старый refresh токен и добавляем новый
+    if (!user.tokens) {
+      user.tokens = []; // Если массива нет, то установим его
+    }
     user.tokens = user.tokens.filter((tokenObj) => tokenObj.token !== refreshToken);
     user.tokens.push({ token: newRefreshToken });
     await user.save();
@@ -197,6 +206,9 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     // Удаляем refresh токен из базы
+    if (!user.tokens) {
+      user.tokens = []; // Если массива нет, то установим его
+    }
     user.tokens = user.tokens.filter((tokenObj) => tokenObj.token !== refreshToken);
     await user.save();
 
