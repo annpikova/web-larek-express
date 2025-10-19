@@ -9,6 +9,23 @@ import UnauthorizedError from '../errors/UnauthorizedError';
 import NotFoundError from '../errors/NotFoundError';
 import ConflictError from '../errors/ConflictError';
 
+// Вспомогательная функция для генерации токенов
+const _getTokens = (user: any) => {
+  const accessToken = jwt.sign(
+    { _id: user._id.toString() },
+    config.JWT_SECRET,
+    { expiresIn: '10m' },
+  );
+
+  const refreshToken = jwt.sign(
+    { _id: user._id.toString(), type: 'refresh' },
+    config.JWT_SECRET,
+    { expiresIn: '7d' },
+  );
+
+  return { accessToken, refreshToken };
+};
+
 const register = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
 
@@ -22,17 +39,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       tokens: [],
     });
 
-    const accessToken = jwt.sign(
-      { _id: user._id.toString() },
-      config.JWT_SECRET,
-      { expiresIn: '10m' },
-    );
-
-    const refreshToken = jwt.sign(
-      { _id: user._id.toString() },
-      config.JWT_SECRET,
-      { expiresIn: '7d' },
-    );
+    const { accessToken, refreshToken } = _getTokens(user);
 
     // Сохраняем refresh токен в базе
     if (!user.tokens) {
@@ -73,6 +80,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
+  console.log('Login attempt:', { email, password: password ? '***' : 'empty' });
 
   try {
     const user = await User.findOne({ email }).select('+password');
@@ -88,17 +96,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    const accessToken = jwt.sign(
-      { _id: user._id.toString() },
-      config.JWT_SECRET,
-      { expiresIn: '10m' },
-    );
-
-    const refreshToken = jwt.sign(
-      { _id: user._id.toString() },
-      config.JWT_SECRET,
-      { expiresIn: '7d' },
-    );
+    const { accessToken, refreshToken } = _getTokens(user);
 
     // Сохраняем refresh токен в базе
     if (!user.tokens) {
@@ -146,17 +144,7 @@ const refreshAccessToken = async (req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    const newAccessToken = jwt.sign(
-      { _id: user._id.toString() },
-      config.JWT_SECRET,
-      { expiresIn: '10m' },
-    );
-
-    const newRefreshToken = jwt.sign(
-      { _id: user._id.toString() },
-      config.JWT_SECRET,
-      { expiresIn: '7d' },
-    );
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = _getTokens(user);
 
     // Удаляем старый refresh токен и добавляем новый
     if (!user.tokens) {
