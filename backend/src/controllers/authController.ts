@@ -57,10 +57,12 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     });
   } catch (error) {
     if (error instanceof Error && error.message.includes('E11000')) {
-      return next(new ConflictError(ERROR_MESSAGES.USER_ALREADY_EXISTS));
+      next(new ConflictError(ERROR_MESSAGES.USER_ALREADY_EXISTS));
+      return;
     }
     if (error instanceof Error && error.name === 'ValidationError') {
-      return next(new BadRequestError(ERROR_MESSAGES.VALIDATION_ERROR));
+      next(new BadRequestError(ERROR_MESSAGES.VALIDATION_ERROR));
+      return;
     }
     next(error);
   }
@@ -73,12 +75,14 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      return next(new UnauthorizedError(ERROR_MESSAGES.INVALID_CREDENTIALS));
+      next(new UnauthorizedError(ERROR_MESSAGES.INVALID_CREDENTIALS));
+      return;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return next(new UnauthorizedError(ERROR_MESSAGES.INVALID_CREDENTIALS));
+      next(new UnauthorizedError(ERROR_MESSAGES.INVALID_CREDENTIALS));
+      return;
     }
 
     const accessToken = jwt.sign(
@@ -123,7 +127,8 @@ const refreshAccessToken = async (req: Request, res: Response, next: NextFunctio
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    return next(new UnauthorizedError('Refresh токен не найден'));
+    next(new UnauthorizedError('Refresh токен не найден'));
+    return;
   }
 
   try {
@@ -131,7 +136,8 @@ const refreshAccessToken = async (req: Request, res: Response, next: NextFunctio
     const user = await User.findById(payload._id).select('+tokens');
 
     if (!user || !user.tokens.some((tokenObj) => tokenObj.token === refreshToken)) {
-      return next(new UnauthorizedError('Неверный refresh токен'));
+      next(new UnauthorizedError('Неверный refresh токен'));
+      return;
     }
 
     const newAccessToken = jwt.sign(
@@ -177,7 +183,8 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    return next(new BadRequestError('Refresh токен не найден'));
+    next(new BadRequestError('Refresh токен не найден'));
+    return;
   }
 
   try {
@@ -185,7 +192,8 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.findById(payload._id);
 
     if (!user) {
-      return next(new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND));
+      next(new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND));
+      return;
     }
 
     // Удаляем refresh токен из базы
@@ -210,7 +218,8 @@ const getCurrentUser = async (req: any, res: Response, next: NextFunction) => {
     const user = await User.findById(_id);
 
     if (!user) {
-      return next(new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND));
+      next(new NotFoundError(ERROR_MESSAGES.USER_NOT_FOUND));
+      return;
     }
 
     res.status(HTTP_STATUS.OK).json({

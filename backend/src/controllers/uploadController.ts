@@ -3,9 +3,10 @@ import path from 'path';
 import { randomUUID } from 'crypto';
 import { HTTP_STATUS } from '../constants';
 
-const uploadFile = (req: Request, res: Response, next: NextFunction) => {
+const uploadFile = (req: Request, res: Response, next: NextFunction): void => {
   if (!req.file) {
-    return next(new Error('Файл не был загружен'));
+    next(new Error('Файл не был загружен'));
+    return;
   }
 
   const { originalname } = req.file;
@@ -18,4 +19,4 @@ const uploadFile = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export { uploadFile };
+export default uploadFile;

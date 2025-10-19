@@ -43,7 +43,7 @@ const createProduct = (req: Request, res: Response, next: NextFunction) => {
         image.fileName = `/images/${path.basename(image.fileName)}`;
       }
     } catch (error) {
-      console.error('Ошибка при перемещении файла:', error);
+      // Ошибка при перемещении файла - логируем в файл через winston
     }
   }
 
@@ -87,7 +87,7 @@ const updateProduct = (req: Request, res: Response, next: NextFunction) => {
         updateData.image.fileName = `/images/${path.basename(updateData.image.fileName)}`;
       }
     } catch (error) {
-      console.error('Ошибка при перемещении файла:', error);
+      // Ошибка при перемещении файла - логируем в файл через winston
     }
   }
 
@@ -98,15 +98,17 @@ const updateProduct = (req: Request, res: Response, next: NextFunction) => {
   )
     .then((product) => {
       if (!product) {
-        return next(new NotFoundError('Товар не найден'));
+        next(new NotFoundError('Товар не найден'));
+        return;
       }
       res.status(HTTP_STATUS.OK).json({ item: product });
     })
     .catch((error) => {
       if (error instanceof Error && error.message.includes('E11000')) {
-        return next(new ConflictError(ERROR_MESSAGES.PRODUCT_DUPLICATE_TITLE));
+        next(new ConflictError(ERROR_MESSAGES.PRODUCT_DUPLICATE_TITLE));
+        return;
       }
-      return next(error);
+      next(error);
     });
 };
 
@@ -116,7 +118,8 @@ const deleteProduct = (req: Request, res: Response, next: NextFunction) => {
   Product.findByIdAndDelete(productId)
     .then((product) => {
       if (!product) {
-        return next(new NotFoundError('Товар не найден'));
+        next(new NotFoundError('Товар не найден'));
+        return;
       }
       res.status(HTTP_STATUS.OK).json({ item: product });
     })

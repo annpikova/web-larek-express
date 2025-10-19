@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { celebrate, Joi } from 'celebrate';
-import { createOrder } from '../controllers/orderController';
+import createOrder from '../controllers/orderController';
 
 const router = Router();
 

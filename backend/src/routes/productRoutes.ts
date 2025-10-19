@@ -3,7 +3,7 @@ import { celebrate, Joi } from 'celebrate';
 import {
   createProduct, getAllProducts, updateProduct, deleteProduct,
 } from '../controllers/productController';
-import auth from '../middlewares/auth';
+// import auth from '../middlewares/auth';
 
 const router = Router();
 

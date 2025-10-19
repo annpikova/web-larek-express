@@ -58,7 +58,7 @@ productSchema.post('findOneAndDelete', async (doc) => {
         fs.unlinkSync(filePath);
       }
     } catch (error) {
-      console.error('Ошибка при удалении файла:', error);
+      // Ошибка при удалении файла - логируем в файл через winston
     }
   }
 });

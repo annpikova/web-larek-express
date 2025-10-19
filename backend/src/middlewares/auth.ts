@@ -9,7 +9,7 @@ interface AuthRequest extends Request {
   };
 }
 
-export default (req: AuthRequest, res: Response, next: NextFunction) => {
+export default (req: AuthRequest, _res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {

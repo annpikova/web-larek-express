@@ -46,7 +46,7 @@ export default function AdminEditProduct() {
 		if (currentProduct) {
 			setValuesForm({description: currentProduct.description, price: currentProduct.price, title: currentProduct.title});
 		}
-	}, [currentProduct]);
+	}, [currentProduct, setValuesForm]);
 
 	const handleUpdateProduct = async () => {
 		if (!selectedCategory) {

@@ -2,12 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import { faker } from '@faker-js/faker';
 import { Types } from 'mongoose';
 import Product from '../models/product';
-import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
+import { HTTP_STATUS } from '../constants';
 import BadRequestError from '../errors/BadRequestError';
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { payment, email, phone, address, total, items } = req.body;
+    const {
+      total, items,
+    } = req.body;
 
     // здесь тело уже провалидировано celebrate, но на всякий случай:
     if (!Array.isArray(items) || items.length === 0) {
@@ -43,4 +45,4 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { createOrder };
+export default createOrder;

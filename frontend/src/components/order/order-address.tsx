@@ -29,7 +29,7 @@ export function OrderAddress() {
 			address: orderPersistData.address,
 			payment: PaymentType.Online
 		});
-	}, [orderPersistData]);
+	}, [orderPersistData, setValuesForm]);
 
 	const nextStep = () => {
 		setInfo(values);

@@ -6,7 +6,7 @@ import NotFoundError from '../errors/NotFoundError';
 import ConflictError from '../errors/ConflictError';
 import InternalServerError from '../errors/InternalServerError';
 
-export default (error: Error, req: Request, res: Response, next: NextFunction) => {
+export default (error: Error, _req: Request, res: Response, _next: NextFunction) => {
   let statusCode = 500;
   let message = 'Внутренняя ошибка сервера';
 
