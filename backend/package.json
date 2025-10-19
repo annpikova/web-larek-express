@@ -19,7 +19,6 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
     "@types/node": "^20.12.7",
-    "@types/validator": "^13.11.9",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "eslint": "^8.56.0",
@@ -32,7 +31,6 @@
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
     "@types/cookie-parser": "^1.4.9",
-    "@types/uuid": "^10.0.0",
     "bcryptjs": "^3.0.2",
     "celebrate": "^15.0.3",
     "cookie-parser": "^1.4.7",
@@ -40,12 +38,9 @@
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "express-winston": "^4.2.0",
-    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.2",
     "multer": "^2.0.2",
-    "uuid": "^13.0.0",
-    "validator": "^13.11.0",
     "winston": "^3.18.3"
   }
 }
