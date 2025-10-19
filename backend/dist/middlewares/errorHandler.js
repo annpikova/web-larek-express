@@ -9,7 +9,7 @@ const UnauthorizedError_1 = __importDefault(require("../errors/UnauthorizedError
 const NotFoundError_1 = __importDefault(require("../errors/NotFoundError"));
 const ConflictError_1 = __importDefault(require("../errors/ConflictError"));
 const InternalServerError_1 = __importDefault(require("../errors/InternalServerError"));
-exports.default = (error, req, res, next) => {
+exports.default = (error, _req, res, _next) => {
     let statusCode = 500;
     let message = 'Внутренняя ошибка сервера';
     if (error instanceof BadRequestError_1.default) {

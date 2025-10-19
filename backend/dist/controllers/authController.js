@@ -56,10 +56,12 @@ const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     }
     catch (error) {
         if (error instanceof Error && error.message.includes('E11000')) {
-            return next(new ConflictError_1.default(constants_1.ERROR_MESSAGES.USER_ALREADY_EXISTS));
+            next(new ConflictError_1.default(constants_1.ERROR_MESSAGES.USER_ALREADY_EXISTS));
+            return;
         }
         if (error instanceof Error && error.name === 'ValidationError') {
-            return next(new BadRequestError_1.default(constants_1.ERROR_MESSAGES.VALIDATION_ERROR));
+            next(new BadRequestError_1.default(constants_1.ERROR_MESSAGES.VALIDATION_ERROR));
+            return;
         }
         next(error);
     }
@@ -70,11 +72,13 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const user = yield user_1.default.findOne({ email }).select('+password');
         if (!user) {
-            return next(new UnauthorizedError_1.default(constants_1.ERROR_MESSAGES.INVALID_CREDENTIALS));
+            next(new UnauthorizedError_1.default(constants_1.ERROR_MESSAGES.INVALID_CREDENTIALS));
+            return;
         }
         const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid) {
-            return next(new UnauthorizedError_1.default(constants_1.ERROR_MESSAGES.INVALID_CREDENTIALS));
+            next(new UnauthorizedError_1.default(constants_1.ERROR_MESSAGES.INVALID_CREDENTIALS));
+            return;
         }
         const accessToken = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, config_1.config.JWT_SECRET, { expiresIn: '10m' });
         const refreshToken = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, config_1.config.JWT_SECRET, { expiresIn: '7d' });
@@ -106,13 +110,15 @@ exports.login = login;
 const refreshAccessToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { refreshToken } = req.cookies;
     if (!refreshToken) {
-        return next(new UnauthorizedError_1.default('Refresh токен не найден'));
+        next(new UnauthorizedError_1.default('Refresh токен не найден'));
+        return;
     }
     try {
         const payload = jsonwebtoken_1.default.verify(refreshToken, config_1.config.JWT_SECRET);
         const user = yield user_1.default.findById(payload._id).select('+tokens');
         if (!user || !user.tokens.some((tokenObj) => tokenObj.token === refreshToken)) {
-            return next(new UnauthorizedError_1.default('Неверный refresh токен'));
+            next(new UnauthorizedError_1.default('Неверный refresh токен'));
+            return;
         }
         const newAccessToken = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, config_1.config.JWT_SECRET, { expiresIn: '10m' });
         const newRefreshToken = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, config_1.config.JWT_SECRET, { expiresIn: '7d' });
@@ -145,13 +151,15 @@ exports.refreshAccessToken = refreshAccessToken;
 const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { refreshToken } = req.cookies;
     if (!refreshToken) {
-        return next(new BadRequestError_1.default('Refresh токен не найден'));
+        next(new BadRequestError_1.default('Refresh токен не найден'));
+        return;
     }
     try {
         const payload = jsonwebtoken_1.default.verify(refreshToken, config_1.config.JWT_SECRET);
         const user = yield user_1.default.findById(payload._id);
         if (!user) {
-            return next(new NotFoundError_1.default(constants_1.ERROR_MESSAGES.USER_NOT_FOUND));
+            next(new NotFoundError_1.default(constants_1.ERROR_MESSAGES.USER_NOT_FOUND));
+            return;
         }
         // Удаляем refresh токен из базы
         user.tokens = user.tokens.filter((tokenObj) => tokenObj.token !== refreshToken);
@@ -172,7 +180,8 @@ const getCurrentUser = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     try {
         const user = yield user_1.default.findById(_id);
         if (!user) {
-            return next(new NotFoundError_1.default(constants_1.ERROR_MESSAGES.USER_NOT_FOUND));
+            next(new NotFoundError_1.default(constants_1.ERROR_MESSAGES.USER_NOT_FOUND));
+            return;
         }
         res.status(constants_1.HTTP_STATUS.OK).json({
             user: {

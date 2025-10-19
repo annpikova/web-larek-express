@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const celebrate_1 = require("celebrate");
 const productController_1 = require("../controllers/productController");
+// import auth from '../middlewares/auth';
 const router = (0, express_1.Router)();
 // Валидация для создания товара
 const createProductValidation = (0, celebrate_1.celebrate)({

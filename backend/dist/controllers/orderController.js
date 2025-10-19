@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createOrder = void 0;
 const faker_1 = require("@faker-js/faker");
 const mongoose_1 = require("mongoose");
 const product_1 = __importDefault(require("../models/product"));
@@ -20,7 +19,7 @@ const constants_1 = require("../constants");
 const BadRequestError_1 = __importDefault(require("../errors/BadRequestError"));
 const createOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { payment, email, phone, address, total, items } = req.body;
+        const { total, items, } = req.body;
         // здесь тело уже провалидировано celebrate, но на всякий случай:
         if (!Array.isArray(items) || items.length === 0) {
             return next(new BadRequestError_1.default('Поле "items" должно быть заполнено'));
@@ -50,4 +49,4 @@ const createOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return next(err);
     }
 });
-exports.createOrder = createOrder;
+exports.default = createOrder;

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
 const UnauthorizedError_1 = __importDefault(require("../errors/UnauthorizedError"));
-exports.default = (req, res, next) => {
+exports.default = (req, _res, next) => {
     const { authorization } = req.headers;
     if (!authorization || !authorization.startsWith('Bearer ')) {
         return next(new UnauthorizedError_1.default('Необходима авторизация'));

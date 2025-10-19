@@ -34,9 +34,9 @@ app.get('/', (req, res) => {
             auth: {
                 register: 'POST /auth/register',
                 login: 'POST /auth/login',
-                user: 'GET /auth/user'
-            }
-        }
+                user: 'GET /auth/user',
+            },
+        },
     });
 });
 // Товары
@@ -44,14 +44,14 @@ app.get('/product', (req, res) => {
     res.json({
         items: [],
         total: 0,
-        message: 'Список товаров (пока пустой)'
+        message: 'Список товаров (пока пустой)',
     });
 });
 // Заказы
 app.post('/order', (req, res) => {
     res.json({
         message: 'Заказ создан (заглушка)',
-        id: 'demo-order-id'
+        id: 'demo-order-id',
     });
 });
 // Запуск сервера

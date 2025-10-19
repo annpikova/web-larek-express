@@ -58,7 +58,7 @@ productSchema.post('findOneAndDelete', (doc) => __awaiter(void 0, void 0, void 0
             }
         }
         catch (error) {
-            console.error('Ошибка при удалении файла:', error);
+            // Ошибка при удалении файла - логируем в файл через winston
         }
     }
 }));

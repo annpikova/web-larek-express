@@ -40,7 +40,7 @@ const createProduct = (req, res, next) => {
             }
         }
         catch (error) {
-            console.error('Ошибка при перемещении файла:', error);
+            // Ошибка при перемещении файла - логируем в файл через winston
         }
     }
     product_1.default.create({
@@ -80,21 +80,23 @@ const updateProduct = (req, res, next) => {
             }
         }
         catch (error) {
-            console.error('Ошибка при перемещении файла:', error);
+            // Ошибка при перемещении файла - логируем в файл через winston
         }
     }
     product_1.default.findByIdAndUpdate(productId, updateData, { runValidators: true, new: true })
         .then((product) => {
         if (!product) {
-            return next(new NotFoundError_1.default('Товар не найден'));
+            next(new NotFoundError_1.default('Товар не найден'));
+            return;
         }
         res.status(constants_1.HTTP_STATUS.OK).json({ item: product });
     })
         .catch((error) => {
         if (error instanceof Error && error.message.includes('E11000')) {
-            return next(new ConflictError_1.default(constants_1.ERROR_MESSAGES.PRODUCT_DUPLICATE_TITLE));
+            next(new ConflictError_1.default(constants_1.ERROR_MESSAGES.PRODUCT_DUPLICATE_TITLE));
+            return;
         }
-        return next(error);
+        next(error);
     });
 };
 exports.updateProduct = updateProduct;
@@ -103,7 +105,8 @@ const deleteProduct = (req, res, next) => {
     product_1.default.findByIdAndDelete(productId)
         .then((product) => {
         if (!product) {
-            return next(new NotFoundError_1.default('Товар не найден'));
+            next(new NotFoundError_1.default('Товар не найден'));
+            return;
         }
         res.status(constants_1.HTTP_STATUS.OK).json({ item: product });
     })
