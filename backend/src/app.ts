@@ -1,5 +1,5 @@
-// import './types/express';
 import express, { Request, Response } from 'express';
+import './types/express';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
