@@ -1,12 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
 import Product from '../models/product';
 import { ERROR_MESSAGES, HTTP_STATUS } from '../constants';
 import ConflictError from '../errors/ConflictError';
 import BadRequestError from '../errors/BadRequestError';
 import NotFoundError from '../errors/NotFoundError';
-import config from '../config';
 
 const getAllProducts = (_req: Request, res: Response, next: NextFunction) => {
   Product.find()
@@ -30,22 +27,6 @@ const createProduct = (req: Request, res: Response, next: NextFunction) => {
     category,
     price,
   } = req.body;
-
-  // Перемещаем файл из временной папки в постоянную
-  if (image && image.fileName) {
-    const tempPath = path.join(config.UPLOAD_TEMP_DIR, path.basename(image.fileName));
-    const finalPath = path.join(config.UPLOAD_FINAL_DIR, path.basename(image.fileName));
-
-    try {
-      if (fs.existsSync(tempPath)) {
-        fs.copyFileSync(tempPath, finalPath);
-        fs.unlinkSync(tempPath); // Удаляем временный файл
-        image.fileName = `/images/${path.basename(image.fileName)}`;
-      }
-    } catch (error) {
-      // Ошибка при перемещении файла - логируем в файл через winston
-    }
-  }
 
   Product.create({
     description,
@@ -74,22 +55,6 @@ const createProduct = (req: Request, res: Response, next: NextFunction) => {
 const updateProduct = (req: Request, res: Response, next: NextFunction) => {
   const { productId } = req.params;
   const updateData = req.body;
-
-  // Если передано новое изображение, перемещаем файл
-  if (updateData.image && updateData.image.fileName) {
-    const tempPath = path.join(config.UPLOAD_TEMP_DIR, path.basename(updateData.image.fileName));
-    const finalPath = path.join(config.UPLOAD_FINAL_DIR, path.basename(updateData.image.fileName));
-
-    try {
-      if (fs.existsSync(tempPath)) {
-        fs.copyFileSync(tempPath, finalPath);
-        fs.unlinkSync(tempPath);
-        updateData.image.fileName = `/images/${path.basename(updateData.image.fileName)}`;
-      }
-    } catch (error) {
-      // Ошибка при перемещении файла - логируем в файл через winston
-    }
-  }
 
   Product.findByIdAndUpdate(
     productId,
