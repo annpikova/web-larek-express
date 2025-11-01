@@ -3,7 +3,7 @@ import { celebrate, Joi } from 'celebrate';
 import {
   createProduct, getAllProducts, updateProduct, deleteProduct,
 } from '../controllers/productController';
-// import auth from '../middlewares/auth';
+import auth from '../middlewares/auth';
 
 const router = Router();
 
@@ -46,8 +46,8 @@ const deleteProductValidation = celebrate({
 });
 
 router.get('/product', getAllProducts);
-router.post('/product', createProductValidation, createProduct);
-router.patch('/product/:productId', updateProductValidation, updateProduct);
-router.delete('/product/:productId', deleteProductValidation, deleteProduct);
+router.post('/product', auth, createProductValidation, createProduct);
+router.patch('/product/:productId', auth, updateProductValidation, updateProduct);
+router.delete('/product/:productId', auth, deleteProductValidation, deleteProduct);
 
 export default router;
