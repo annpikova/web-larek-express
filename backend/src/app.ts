@@ -12,6 +12,7 @@ import authRoutes from './routes/authRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import config from './config';
 import { errorLogger, requestLogger } from './middlewares/logger';
+import { apiLimiter } from './middlewares/rateLimiter';
 
 mongoose.connect(config.DB_ADDRESS)
   .then(() => {
@@ -35,6 +36,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(requestLogger);
+app.use(apiLimiter);
 
 app.use(productRoutes);
 app.use(orderRoutes);

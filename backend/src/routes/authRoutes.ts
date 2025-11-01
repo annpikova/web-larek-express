@@ -4,6 +4,7 @@ import {
   register, login, refreshAccessToken, logout, getCurrentUser,
 } from '../controllers/authController';
 import auth from '../middlewares/auth';
+import { authLimiter } from '../middlewares/rateLimiter';
 
 const router = Router();
 
@@ -24,10 +25,10 @@ const loginValidation = celebrate({
   }),
 });
 
-router.post('/auth/register', registerValidation, register);
-router.post('/auth/login', loginValidation, login);
-router.get('/auth/token', refreshAccessToken);
-router.get('/auth/logout', logout);
+router.post('/auth/register', authLimiter, registerValidation, register);
+router.post('/auth/login', authLimiter, loginValidation, login);
+router.get('/auth/token', authLimiter, refreshAccessToken);
+router.get('/auth/logout', authLimiter, logout);
 router.get('/auth/user', auth, getCurrentUser);
 
 export default router;
