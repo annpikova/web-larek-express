@@ -77,7 +77,7 @@ export default function AdminEditProduct() {
 			<Select options={CATEGORY_TYPES} selected={selectedCategory} placeholder='Выберите категорию' onChange={setSelectedCategory} />
 			<Input value={values.description || ""} onChange={handleChange} component='textarea' name='description' placeholder="Введите описание" label='Описание' required error={errors.description} />
 			<Input value={values.price || ""} extraClassLabel={styles.label__price} onChange={handleChange} type='number' name='price' placeholder="Введите стоимость" label='Стоимость (в синапсах)' error={errors.description} />
-			<FileInput onChange={handleFileChange} extraClass={styles.admin__file} inputRef={fileRef} label='Заменить изображение' accept='image/*,.png,.jpeg,.jpg,.svg' fileName={currentProduct?.image.originalName} />
+			<FileInput onChange={handleFileChange} extraClass={styles.admin__file} inputRef={fileRef} label='Заменить изображение' accept='image/png,image/jpeg,image/jpg,image/gif' fileName={currentProduct?.image.originalName} />
 			<div className={styles.admin__buttons}>
 				<Button type="submit" disabled={!isValidForm}>Сохранить</Button>
 				<Button onClick={handleDeleteProduct} type="button" extraClass={styles.admin__button_alt}>Удалить товар</Button>

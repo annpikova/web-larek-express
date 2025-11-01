@@ -15,11 +15,25 @@ const uploadFile = (req: Request, res: Response, next: NextFunction): void => {
   const fileExtension = path.extname(originalname);
   const uniqueFileName = `${randomUUID()}${fileExtension}`;
 
-  // Перемещаем файл из временной папки в постоянную
-  const tempPath = path.join(config.UPLOAD_TEMP_DIR, req.file.filename);
-  const finalPath = path.join(config.UPLOAD_FINAL_DIR, uniqueFileName);
+  // Перемещаем файл из временной папки в постоянную с защитой от path traversal
+  const tempDir = path.resolve(process.cwd(), config.UPLOAD_TEMP_DIR);
+  const finalDir = path.resolve(process.cwd(), config.UPLOAD_FINAL_DIR);
+
+  const tempPath = path.join(tempDir, req.file.filename);
+  const finalPath = path.join(finalDir, uniqueFileName);
+
+  // Проверка на выход за пределы директории
+  if (!finalPath.startsWith(finalDir)) {
+    next(new Error('Неверное имя файла'));
+    return;
+  }
 
   try {
+    // Создаем директорию, если её нет
+    if (!fs.existsSync(finalDir)) {
+      fs.mkdirSync(finalDir, { recursive: true });
+    }
+
     if (fs.existsSync(tempPath)) {
       fs.copyFileSync(tempPath, finalPath);
       fs.unlinkSync(tempPath);

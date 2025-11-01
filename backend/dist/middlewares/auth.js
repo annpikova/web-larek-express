@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = require("../config");
+const config_1 = __importDefault(require("../config"));
 const UnauthorizedError_1 = __importDefault(require("../errors/UnauthorizedError"));
 exports.default = (req, _res, next) => {
     const { authorization } = req.headers;
@@ -14,7 +14,7 @@ exports.default = (req, _res, next) => {
     const token = authorization.replace('Bearer ', '');
     let payload;
     try {
-        payload = jsonwebtoken_1.default.verify(token, config_1.config.JWT_SECRET);
+        payload = jsonwebtoken_1.default.verify(token, config_1.default.JWT_SECRET);
     }
     catch (err) {
         return next(new UnauthorizedError_1.default('Неверный токен'));

@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const celebrate_1 = require("celebrate");
 const productController_1 = require("../controllers/productController");
-// import auth from '../middlewares/auth';
+const auth_1 = __importDefault(require("../middlewares/auth"));
 const router = (0, express_1.Router)();
 // Валидация для создания товара
 const createProductValidation = (0, celebrate_1.celebrate)({
@@ -41,7 +44,7 @@ const deleteProductValidation = (0, celebrate_1.celebrate)({
     }),
 });
 router.get('/product', productController_1.getAllProducts);
-router.post('/product', createProductValidation, productController_1.createProduct);
-router.patch('/product/:productId', updateProductValidation, productController_1.updateProduct);
-router.delete('/product/:productId', deleteProductValidation, productController_1.deleteProduct);
+router.post('/product', auth_1.default, createProductValidation, productController_1.createProduct);
+router.patch('/product/:productId', auth_1.default, updateProductValidation, productController_1.updateProduct);
+router.delete('/product/:productId', auth_1.default, deleteProductValidation, productController_1.deleteProduct);
 exports.default = router;

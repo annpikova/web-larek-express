@@ -24,9 +24,15 @@ const createOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         if (!Array.isArray(items) || items.length === 0) {
             return next(new BadRequestError_1.default('Поле "items" должно быть заполнено'));
         }
-        // находим все товары по id
+        // находим все товары по id с предварительной валидацией ObjectId
+        const objectIds = items
+            .filter((id) => mongoose_1.Types.ObjectId.isValid(id))
+            .map((id) => new mongoose_1.Types.ObjectId(id));
+        if (objectIds.length !== items.length) {
+            return next(new BadRequestError_1.default('Некорректные товары в заказе'));
+        }
         const products = yield product_1.default.find({
-            _id: { $in: items.map((id) => new mongoose_1.Types.ObjectId(id)) },
+            _id: { $in: objectIds },
         });
         // 1) все ли товары существуют
         if (products.length !== items.length) {

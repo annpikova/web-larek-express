@@ -16,9 +16,17 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       return next(new BadRequestError('Поле "items" должно быть заполнено'));
     }
 
-    // находим все товары по id
+    // находим все товары по id с предварительной валидацией ObjectId
+    const objectIds = items
+      .filter((id: string) => Types.ObjectId.isValid(id))
+      .map((id: string) => new Types.ObjectId(id));
+
+    if (objectIds.length !== items.length) {
+      return next(new BadRequestError('Некорректные товары в заказе'));
+    }
+
     const products = await Product.find({
-      _id: { $in: items.map((id: string) => new Types.ObjectId(id)) },
+      _id: { $in: objectIds },
     });
 
     // 1) все ли товары существуют

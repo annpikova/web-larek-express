@@ -36,7 +36,7 @@ const userSchema = new mongoose_1.Schema({
         required: [true, 'Поле "email" должно быть заполнено'],
         unique: true,
         validate: {
-            validator: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+            validator: (v) => /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{1,10}$/.test(v),
             message: 'Некорректный формат email',
         },
     },

@@ -7,8 +7,8 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const config_1 = require("./config");
-mongoose_1.default.connect(config_1.config.DB_ADDRESS)
+const config_1 = __importDefault(require("./config"));
+mongoose_1.default.connect(config_1.default.DB_ADDRESS)
     .then(() => {
     console.log('Подключение к БД успешно установлено');
 })
@@ -50,7 +50,7 @@ app.post('/order', (req, res) => {
         id: 'demo-order-id',
     });
 });
-app.listen(config_1.config.PORT, () => {
-    console.log(`Сервер запущен на http://localhost:${config_1.config.PORT}`);
-    console.log(`API доступно по адресу: http://localhost:${config_1.config.PORT}`);
+app.listen(config_1.default.PORT, () => {
+    console.log(`Сервер запущен на http://localhost:${config_1.default.PORT}`);
+    console.log(`API доступно по адресу: http://localhost:${config_1.default.PORT}`);
 });

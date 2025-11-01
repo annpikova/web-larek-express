@@ -27,8 +27,8 @@ const loginValidation = celebrate({
 
 router.post('/auth/register', authLimiter, registerValidation, register);
 router.post('/auth/login', authLimiter, loginValidation, login);
-router.get('/auth/token', authLimiter, refreshAccessToken);
-router.get('/auth/logout', authLimiter, logout);
+router.post('/auth/token', authLimiter, refreshAccessToken);
+router.post('/auth/logout', authLimiter, logout);
 router.get('/auth/user', auth, getCurrentUser);
 
 export default router;
