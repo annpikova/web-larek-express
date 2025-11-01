@@ -19,7 +19,7 @@ const userSchema = new Schema<IUser>({
     required: [true, 'Поле "email" должно быть заполнено'],
     unique: true,
     validate: {
-      validator: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      validator: (v: string) => /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{1,10}$/.test(v),
       message: 'Некорректный формат email',
     },
   },
