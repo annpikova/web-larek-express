@@ -4,7 +4,7 @@
 
 ## Ссылка на репозиторий
 
-https://github.com/YOUR_USERNAME/web-larek-express
+https://github.com/annpikova/web-larek-express
 
 ## Информация об авторе
 
@@ -27,7 +27,7 @@ https://github.com/YOUR_USERNAME/web-larek-express
 
 ```bash
 # Клонировать репозиторий
-git clone https://github.com/YOUR_USERNAME/web-larek-express.git
+git clone https://github.com/annpikova/web-larek-express.git
 
 # Перейти в директорию проекта
 cd web-larek-express
