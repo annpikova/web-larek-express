@@ -17,7 +17,7 @@ export type ApiListResponse<Type> = {
 };
 
 class Api {
-	private readonly baseUrl: string;
+	protected readonly baseUrl: string;
 	protected options: RequestInit;
 
 	constructor(baseUrl: string, options: RequestInit = {}) {
