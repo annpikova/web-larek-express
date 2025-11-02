@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import './types/express';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
@@ -37,15 +36,15 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());
 
 // CSRF защита - выдаем токен
-app.get('/csrf-token', csrfProtection, (req: Request, res: Response) => {
-  res.json({ csrfToken: req.csrfToken?.() || '' });
+app.get('/csrf-token', csrfProtection, (req: any, res: Response) => {
+  res.json({ csrfToken: req.csrfToken || '' });
 });
 
-app.use(csrfProtection);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(requestLogger);
 app.use(apiLimiter);
+app.use(csrfProtection);
 app.use(verifyCsrf);
 
 app.use(productRoutes);

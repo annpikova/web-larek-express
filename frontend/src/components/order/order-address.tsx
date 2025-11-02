@@ -27,7 +27,7 @@ export function OrderAddress() {
 	useEffect(() => {
 		setValuesForm({
 			address: orderPersistData.address,
-			payment: PaymentType.Online
+			payment: orderPersistData.payment || PaymentType.Online
 		});
 	}, [orderPersistData, setValuesForm]);
 

@@ -4,20 +4,18 @@ import { randomBytes } from 'crypto';
 // Простая CSRF-защита без csurf
 export const csrfProtection = (req: Request, res: Response, next: NextFunction) => {
   // Генерируем токен при первом запросе
-  let token = req.cookies.csrfToken;
-
-  if (!token) {
-    token = randomBytes(32).toString('hex');
+  if (!req.cookies.csrfToken) {
+    const token = randomBytes(32).toString('hex');
     res.cookie('csrfToken', token, {
       httpOnly: false, // Должен быть доступен для JS
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 1000, // 1 час
     });
-    req.cookies.csrfToken = token;
+    (req as any).csrfToken = token;
+  } else {
+    (req as any).csrfToken = req.cookies.csrfToken;
   }
-
-  req.csrfToken = () => token;
   return next();
 };
 
@@ -31,9 +29,9 @@ export const verifyCsrf = (req: Request, res: Response, next: NextFunction) => {
   }
 
   const headerToken = req.headers['x-csrf-token'] as string;
-  const cookieToken = req.cookies.csrfToken;
+  const cookieToken = req.cookies.csrfToken || (req as any).csrfToken;
 
-  if (!headerToken || headerToken !== cookieToken) {
+  if (!headerToken || !cookieToken || headerToken !== cookieToken) {
     return res.status(403).json({ message: 'Неверный CSRF токен' });
   }
 

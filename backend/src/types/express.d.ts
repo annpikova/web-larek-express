@@ -6,7 +6,7 @@ declare global {
       user?: {
         _id: string;
       };
-      csrfToken?: () => string;
+      csrfToken?: string;
     }
   }
 }

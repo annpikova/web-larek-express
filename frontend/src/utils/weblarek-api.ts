@@ -117,13 +117,36 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
 		);
 	};
 
-	orderProducts = (order: IOrder): Promise<IOrderResult> => {
+	getCsrfToken = async (): Promise<string> => {
+		const response = await fetch(`${this.baseUrl}/csrf-token`, {
+			method: 'GET',
+			credentials: 'include',
+		});
+		const data = await response.json();
+		return data.csrfToken || '';
+	};
+
+	orderProducts = async (order: IOrder): Promise<IOrderResult> => {
+		// Получаем CSRF токен из cookie или запрашиваем его с сервера
+		let csrfToken = getCookie('csrfToken');
+		
+		// Если токена нет в cookie, получаем его с сервера
+		if (!csrfToken) {
+			csrfToken = await this.getCsrfToken();
+		}
+
+		if (!csrfToken) {
+			throw new Error('Не удалось получить CSRF токен');
+		}
+
 		return this.request<IOrderResult>('/order', {
 			method: 'POST',
 			body: JSON.stringify(order),
 			headers: {
 				'Content-Type': 'application/json',
-			}
+				'X-CSRF-Token': csrfToken,
+			},
+			credentials: 'include'
 		}).then((data: IOrderResult) => data);
 	};
 
