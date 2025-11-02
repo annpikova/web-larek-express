@@ -24,19 +24,26 @@ const createOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         if (!Array.isArray(items) || items.length === 0) {
             return next(new BadRequestError_1.default('Поле "items" должно быть заполнено'));
         }
-        // находим все товары по id с предварительной валидацией ObjectId
-        const objectIds = items
-            .filter((id) => mongoose_1.Types.ObjectId.isValid(id))
-            .map((id) => new mongoose_1.Types.ObjectId(id));
-        if (objectIds.length !== items.length) {
-            return next(new BadRequestError_1.default('Некорректные товары в заказе'));
+        // Проверяем, что все id валидные строки и не пустые
+        const validIds = items
+            .filter((id) => typeof id === 'string' && id.trim().length > 0)
+            .map((id) => id.trim());
+        if (validIds.length !== items.length) {
+            return next(new BadRequestError_1.default('Некорректный идентификатор товара'));
         }
+        // Проверяем, что все id являются валидными ObjectId
+        const invalidId = validIds.find((id) => !mongoose_1.Types.ObjectId.isValid(id));
+        if (invalidId) {
+            return next(new BadRequestError_1.default('Некорректный идентификатор товара'));
+        }
+        // Создаем ObjectId только после проверки валидности
+        const objectIds = validIds.map((id) => new mongoose_1.Types.ObjectId(id));
         const products = yield product_1.default.find({
             _id: { $in: objectIds },
         });
         // 1) все ли товары существуют
         if (products.length !== items.length) {
-            return next(new BadRequestError_1.default('Некорректные товары в заказе'));
+            return next(new BadRequestError_1.default('Некоторые товары не найдены'));
         }
         // 2) все ли товары продаются (price !== null)
         if (products.some((p) => p.price === null || p.price === undefined)) {
@@ -44,6 +51,9 @@ const createOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         }
         // 3) совпадает ли сумма
         const sum = products.reduce((acc, p) => acc + p.price, 0);
+        if (typeof total !== 'number') {
+            return next(new BadRequestError_1.default('Поле "total" должно быть числом'));
+        }
         if (sum !== total) {
             return next(new BadRequestError_1.default('Сумма заказа не совпадает с total'));
         }

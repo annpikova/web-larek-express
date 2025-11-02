@@ -16,14 +16,23 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       return next(new BadRequestError('Поле "items" должно быть заполнено'));
     }
 
-    // находим все товары по id с предварительной валидацией ObjectId
-    const objectIds = items
-      .filter((id: string) => Types.ObjectId.isValid(id))
-      .map((id: string) => new Types.ObjectId(id));
+    // Проверяем, что все id валидные строки и не пустые
+    const validIds = items
+      .filter((id: string) => typeof id === 'string' && id.trim().length > 0)
+      .map((id: string) => id.trim());
 
-    if (objectIds.length !== items.length) {
-      return next(new BadRequestError('Некорректные товары в заказе'));
+    if (validIds.length !== items.length) {
+      return next(new BadRequestError('Некорректный идентификатор товара'));
     }
+
+    // Проверяем, что все id являются валидными ObjectId
+    const invalidId = validIds.find((id) => !Types.ObjectId.isValid(id));
+    if (invalidId) {
+      return next(new BadRequestError('Некорректный идентификатор товара'));
+    }
+
+    // Создаем ObjectId только после проверки валидности
+    const objectIds = validIds.map((id: string) => new Types.ObjectId(id));
 
     const products = await Product.find({
       _id: { $in: objectIds },
@@ -31,7 +40,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
     // 1) все ли товары существуют
     if (products.length !== items.length) {
-      return next(new BadRequestError('Некорректные товары в заказе'));
+      return next(new BadRequestError('Некоторые товары не найдены'));
     }
 
     // 2) все ли товары продаются (price !== null)
@@ -41,6 +50,11 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
     // 3) совпадает ли сумма
     const sum = products.reduce((acc, p) => acc + (p.price as number), 0);
+    
+    if (typeof total !== 'number') {
+      return next(new BadRequestError('Поле "total" должно быть числом'));
+    }
+
     if (sum !== total) {
       return next(new BadRequestError('Сумма заказа не совпадает с total'));
     }
