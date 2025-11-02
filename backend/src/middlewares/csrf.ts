@@ -22,7 +22,7 @@ export const csrfProtection = (req: Request, res: Response, next: NextFunction) 
 // Проверка CSRF токена для unsafe методов
 export const verifyCsrf = (req: Request, res: Response, next: NextFunction) => {
   const isUnsafe = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);
-  
+
   if (!isUnsafe) {
     return next();
   }

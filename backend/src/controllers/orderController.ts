@@ -50,7 +50,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
     // 3) совпадает ли сумма
     const sum = products.reduce((acc, p) => acc + (p.price as number), 0);
-    
+
     if (typeof total !== 'number') {
       return next(new BadRequestError('Поле "total" должно быть числом'));
     }
