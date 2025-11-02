@@ -1,69 +1,67 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { faker } from '@faker-js/faker';
 import { Types } from 'mongoose';
 import Product from '../models/product';
-import { HTTP_STATUS } from '../constants';
-import BadRequestError from '../errors/BadRequestError';
 
-const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+const createOrder = async (req: Request, res: Response) => {
   try {
     const {
-      total, items,
+      payment, email, phone, address, total, items,
     } = req.body;
 
-    // здесь тело уже провалидировано celebrate, но на всякий случай:
+    // Обязательные поля
+    if (!payment || !email || !phone || !address) {
+      return res.status(400).json({ message: 'Не все обязательные поля заполнены' });
+    }
+
     if (!Array.isArray(items) || items.length === 0) {
-      return next(new BadRequestError('Поле "items" должно быть заполнено'));
+      return res.status(400).json({ message: 'Поле "items" должно быть массивом с товарами' });
     }
 
-    // Проверяем, что все id валидные строки и не пустые
-    const validIds = items
-      .filter((id: string) => typeof id === 'string' && id.trim().length > 0)
-      .map((id: string) => id.trim());
+    // Нормализуем и проверяем id
+    const rawIds = items.map((id: unknown) => (typeof id === 'string' ? id.trim() : ''));
+    const filtered = rawIds.filter((id) => id.length > 0);
 
-    if (validIds.length !== items.length) {
-      return next(new BadRequestError('Некорректный идентификатор товара'));
+    if (filtered.length !== rawIds.length) {
+      return res.status(400).json({ message: 'Некорректный идентификатор товара' });
     }
 
-    // Проверяем, что все id являются валидными ObjectId
-    const invalidId = validIds.find((id) => !Types.ObjectId.isValid(id));
-    if (invalidId) {
-      return next(new BadRequestError('Некорректный идентификатор товара'));
+    const invalid = filtered.find((id) => !Types.ObjectId.isValid(id));
+    if (invalid) {
+      return res.status(400).json({ message: 'Некорректный идентификатор товара' });
     }
 
-    // Создаем ObjectId только после проверки валидности
-    const objectIds = validIds.map((id: string) => new Types.ObjectId(id));
+    const objectIds = filtered.map((id) => new Types.ObjectId(id));
 
-    const products = await Product.find({
-      _id: { $in: objectIds },
-    });
+    // Забираем товары
+    const products = await Product.find({ _id: { $in: objectIds } });
 
-    // 1) все ли товары существуют
-    if (products.length !== items.length) {
-      return next(new BadRequestError('Некоторые товары не найдены'));
+    if (products.length !== objectIds.length) {
+      return res.status(400).json({ message: 'Некоторые товары не найдены' });
     }
 
-    // 2) все ли товары продаются (price !== null)
+    // Проверяем, что все товары продаются (price !== null)
     if (products.some((p) => p.price === null || p.price === undefined)) {
-      return next(new BadRequestError('В заказе есть товар без цены'));
+      return res.status(400).json({ message: 'В заказе есть товар без цены' });
     }
 
-    // 3) совпадает ли сумма
-    const sum = products.reduce((acc, p) => acc + (p.price as number), 0);
+    // Считаем сумму
+    const sum = products.reduce((acc, p) => acc + (p.price ?? 0), 0);
 
     if (typeof total !== 'number') {
-      return next(new BadRequestError('Поле "total" должно быть числом'));
+      return res.status(400).json({ message: 'Поле "total" должно быть числом' });
     }
 
     if (sum !== total) {
-      return next(new BadRequestError('Сумма заказа не совпадает с total'));
+      return res.status(400).json({ message: 'Сумма заказа не совпадает с total' });
     }
 
-    // успех — по условиям заказы не сохраняем в БД
+    // Успех
     const id = faker.string.uuid();
-    return res.status(HTTP_STATUS.OK).json({ id, total: sum });
-  } catch (err) {
-    return next(err);
+    return res.status(200).json({ id, total: sum });
+  } catch (e) {
+    // Если что-то совсем пошло не так — всё равно 500
+    return res.status(500).json({ message: 'Внутренняя ошибка сервера' });
   }
 };
 

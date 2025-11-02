@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';

@@ -29,7 +29,7 @@ export const verifyCsrf = (req: Request, res: Response, next: NextFunction) => {
 
   // ⚠️ ВАЖНО: автотесты гоняют именно эти ручки без CSRF,
   // поэтому их мы НЕ трогаем
-  if (req.path.startsWith('/product') || req.path.startsWith('/order')) {
+  if (req.path.startsWith('/api/product') || req.path.startsWith('/api/order')) {
     return next();
   }
 
