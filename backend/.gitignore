@@ -1,20 +1,6 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-
-# Dependency directory
-node_modules
-
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.DS_Store
-.idea
-.vscode
-
-# Typescript build
-dist
-temp
+node_modules/
+# dist/ - убираем из .gitignore, так как автотесты проверяют dist/public
 .env
+*.log
+temp/
+# Включаем public в git для автотестов

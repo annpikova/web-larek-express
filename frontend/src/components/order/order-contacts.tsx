@@ -36,7 +36,7 @@ export function OrderContacts() {
 			email: orderPersistData.email,
 			phone: orderPersistData.phone
 		});	
-	}, [orderPersistData]);
+	}, [orderPersistData, setValuesForm]);
 
 
 	const handleFormSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
@@ -48,9 +48,10 @@ export function OrderContacts() {
 				resetBasket();
 				navigate({ pathname: AppRoute.OrderSuccess }, { state: { orderResponse: dataResponse, background: { ...location, pathname: '/', state: null } }, replace: true })
 			}
-		);
-
-	
+		).catch((error) => {
+			console.error('Ошибка при создании заказа:', error);
+			// TODO: показать пользователю сообщение об ошибке
+		});
 	}
 
 		return (
