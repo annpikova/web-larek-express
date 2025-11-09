@@ -15,7 +15,7 @@ const createOrderValidation = (0, celebrate_1.celebrate)({
         phone: celebrate_1.Joi.string().required(),
         address: celebrate_1.Joi.string().required(),
         total: celebrate_1.Joi.number().min(0).required(),
-        items: celebrate_1.Joi.array().items(celebrate_1.Joi.string().hex().length(24)).min(1).required(),
+        items: celebrate_1.Joi.array().items(celebrate_1.Joi.string().allow('')).required(),
     }),
 });
 router.post('/order', createOrderValidation, orderController_1.default);

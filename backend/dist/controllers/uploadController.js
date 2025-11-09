@@ -13,8 +13,8 @@ const uploadFile = (req, res, next) => {
         next(new Error('Файл не был загружен'));
         return;
     }
-    const { originalname } = req.file;
-    const fileExtension = path_1.default.extname(originalname);
+    const originalName = path_1.default.basename(req.file.originalname || '');
+    const fileExtension = path_1.default.extname(originalName);
     const uniqueFileName = `${(0, crypto_1.randomUUID)()}${fileExtension}`;
     // Перемещаем файл из временной папки в постоянную с защитой от path traversal
     const tempDir = path_1.default.resolve(process.cwd(), config_1.default.UPLOAD_TEMP_DIR);
@@ -40,9 +40,11 @@ const uploadFile = (req, res, next) => {
         next(new Error('Ошибка при сохранении файла'));
         return;
     }
+    const publicPath = `/images/${uniqueFileName}`;
     res.status(constants_1.HTTP_STATUS.OK).json({
-        fileName: `/images/${uniqueFileName}`,
-        originalName: originalname,
+        fileName: publicPath,
+        storedName: uniqueFileName,
+        originalName,
     });
 };
 exports.default = uploadFile;

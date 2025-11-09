@@ -11,8 +11,8 @@ const uploadFile = (req: Request, res: Response, next: NextFunction): void => {
     return;
   }
 
-  const { originalname } = req.file;
-  const fileExtension = path.extname(originalname);
+  const originalName = path.basename(req.file.originalname || '');
+  const fileExtension = path.extname(originalName);
   const uniqueFileName = `${randomUUID()}${fileExtension}`;
 
   // Перемещаем файл из временной папки в постоянную с защитой от path traversal
@@ -43,9 +43,12 @@ const uploadFile = (req: Request, res: Response, next: NextFunction): void => {
     return;
   }
 
+  const publicPath = `/images/${uniqueFileName}`;
+
   res.status(HTTP_STATUS.OK).json({
-    fileName: `/images/${uniqueFileName}`,
-    originalName: originalname,
+    fileName: publicPath,
+    storedName: uniqueFileName,
+    originalName,
   });
 };
 
